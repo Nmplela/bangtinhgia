@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PHẦN MỀM TÍNH GIÁ XƯỞNG IN NMPLELA</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-body: #05070a;
+            --card-bg: #0f172a;
+            --primary: #3b82f6;
+            --accent: #00f2fe;
+            --warning: #fbbf24;
+            --text-main: #f8fafc;
+            --text-dim: #94a3b8;
+            --border: rgba(255, 255, 255, 0.1);
+        }
+
+        html {
+            background-color: var(--bg-body);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: auto;
+        }
+
+        .header-title {
+            text-align: center;
+            margin-bottom: 30px;
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+        }
+
+        .header-title h1 {
+            font-weight: 800;
+            color: var(--accent);
+            font-size: 2rem;
+        }
+
+        /* Cấu trúc cụm bảng tính độc lập */
+        .calculator-wrapper {
+            background: rgba(15, 23, 42, 0.4);
+            border: 2px solid var(--border);
+            border-radius: 28px;
+            padding: 20px;
+            margin-bottom: 60px;
+            position: relative;
+        }
+
+        .calc-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 0 10px;
+        }
+
+        .calc-title {
+            color: var(--accent);
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .item-card {
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 24px;
+            margin-bottom: 25px;
+            border: 1px solid var(--border);
+            position: relative;
+        }
+
+        .item-number {
+            position: absolute;
+            top: -12px;
+            left: 25px;
+            background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%);
+            color: #000;
+            padding: 4px 20px;
+            border-radius: 30px;
+            font-weight: 800;
+            font-size: 0.75rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .label {
+            font-weight: 700;
+            color: var(--text-dim);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+        }
+
+        .input,
+        .select select {
+            background-color: #1e293b !important;
+            border: 1.5px solid #334155 !important;
+            color: white !important;
+            border-radius: 10px;
+        }
+
+        .xa-lo-box {
+            background: rgba(251, 191, 36, 0.05);
+            padding: 15px;
+            border-radius: 12px;
+            border: 1px dashed var(--warning);
+            margin-top: 10px;
+            display: none;
+        }
+
+        .lamination-box {
+            background: rgba(15, 23, 42, 0.5);
+            padding: 15px;
+            border-radius: 12px;
+            border: 1px dashed #334155;
+            margin-top: 10px;
+        }
+
+        .manual-section {
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            margin-top: 25px;
+        }
+
+        .sticky-footer {
+            position: relative;
+            background: #1e293b;
+            padding: 20px 30px;
+            border-radius: 24px;
+            margin-top: 30px;
+            border: 1px solid var(--accent);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+        }
+
+        .total-amount {
+            font-size: 1.5rem;
+            font-weight: 900;
+            color: #10b981;
+        }
+
+        .price-item {
+            flex: 1;
+            text-align: center;
+            border-right: 1px solid var(--border);
+        }
+
+        .price-item:last-child {
+            border-right: none;
+        }
+
+        .btn-add-calc {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 12px;
+            font-weight: 800;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <div class="header-title">
+            <h1>Tính giá Offset | Nmplela Phương</h1>
+        </div>
+
+        <div id="all-calculators"></div>
+
+        <div style="text-align: center; margin: 40px 0;">
+            <button class="btn-add-calc" onclick="createNewCalculator()"
+                style="width: 100%; max-width: 400px; height: 60px; font-size: 1.2rem; box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);">
+                Bài Tính Giá Mới
+            </button>
+        </div>
+    </div>
+
+
+    <script>
+        let calcCount = 0;
+        let totalItemCount = 0;
+
+        const MACHINE_PRICES = {
+            "m4": { kem: 30000, cong: 80000, bu: 35 },           // Sửa bu từ 20 thành 35
+            "m8": { kem: 56500, cong: 115000, bu: 35 },           // Sửa bu từ 30 thành 35
+            "m10": { kem: 56500, cong: 115000, congMax: 140000, bu: 35, buMax: 35 }, // Sửa bu từ 25 thành 35
+            "m16": { kem: 110000, cong: 230000, congMax: 250000, bu: 80, buMax: 80 }  // Sửa bu từ 60 thành 80
+        };
+
+        const RAM_SIZES = [
+            { w: 55, h: 79, n: "55x79", area: 4345 },
+            { w: 62, h: 86, n: "62x86", area: 5332 },
+            { w: 65, h: 86, n: "65x86", area: 5590 },
+            { w: 79, h: 109, n: "79x109", area: 8611 }
+        ];
+
+        // Hàm tạo một cụm bảng tính hoàn chỉnh
+        function createNewCalculator() {
+            calcCount++;
+            const calcId = `calc-group-${calcCount}`;
+            const div = document.createElement('div');
+            div.className = 'calculator-wrapper';
+            div.id = calcId;
+            div.innerHTML = `
+        <div class="calc-header">
+            <div class="calc-title">Bài #${calcCount}</div>
+            <button class="button is-danger is-small is-outlined" onclick="document.getElementById('${calcId}').remove()">Xóa bảng này ✕</button>
+        </div>
+
+        <div class="items-container" id="items-container-${calcCount}"></div>
+
+        <div class="manual-section">
+            <label class="label mb-4" style="color: var(--accent)">GIA CÔNG TỰ NHẬP (VNĐ)</label>
+            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px;">
+                <div class="field"><label class="label">Khuôn bế</label><input type="text" class="input currency-input manual-val" oninput="calculateAll(${calcCount})"></div>
+                <div class="field"><label class="label">Xén</label><input type="text" class="input currency-input manual-val" oninput="calculateAll(${calcCount})"></div>
+                <div class="field"><label class="label">Thiết kế</label><input type="text" class="input currency-input manual-val" oninput="calculateAll(${calcCount})"></div>
+                <div class="field"><label class="label">Ship</label><input type="text" class="input currency-input manual-val" oninput="calculateAll(${calcCount})"></div>
+                <div class="field"><label class="label">Ép nhũ</label><input type="text" class="input currency-input manual-val" oninput="calculateAll(${calcCount})"></div>
+                <div class="field"><label class="label">Bồi</label><input type="text" class="input currency-input manual-val" oninput="calculateAll(${calcCount})"></div>
+                <div class="field"><label class="label">Gia công khác</label><input type="text" class="input currency-input manual-val" oninput="calculateAll(${calcCount})"></div>
+            </div>
+        </div>
+
+        <div class="sticky-footer">
+            <div class="columns is-vcentered">
+                <div class="column is-2">
+    <label class="label">% Lợi nhuận</label>
+    <input type="number" class="input profit-percent" placeholder="0" oninput="calculateAll(${calcCount})">
+</div>
+                <div class="column is-2"><label class="label">% VAT</label><input type="number" class="input vat-percent" placeholder="0" oninput="calculateAll(${calcCount})"></div>
+                <div class="column is-8 is-flex">
+                    <div class="price-item"><p class="is-size-7">Giá Gốc</p><p class="view-base has-text-weight-bold">0</p></div>
+                    <div class="price-item"><p class="is-size-7">Giá bán (đã lãi)</p><p class="view-profit has-text-weight-bold" style="color: #3b82f6;">0</p></div>
+                    <div class="price-item col-vat-amount" style="display:none;"><p class="is-size-7">Thuế VAT</p><p class="view-vat-diff has-text-weight-bold" style="color: #fbbf24;">0</p></div>
+                    <div class="price-item" style="border:none;"><p class="is-size-7" style="color: #10b981">Giá Cuối</p><p class="view-final total-amount">0 VNĐ</p></div>
+                </div>
+            </div>
+        </div>
+    `;
+            document.getElementById('all-calculators').appendChild(div);
+            addItem(calcCount); // Tự động thêm bài in đầu tiên cho bảng mới
+        }
+
+        function addItem(calcIndex) {
+            totalItemCount++;
+            const targetContainer = document.getElementById(`items-container-${calcIndex}`);
+            const div = document.createElement('div');
+            div.className = 'item-card';
+            div.id = `item-${totalItemCount}`;
+            div.innerHTML = `
+        <div class="item-number">BÀI IN <span class="badge-status" id="badge-${totalItemCount}"></span></div>
+        <div class="columns is-multiline is-variable is-2">
+            <div class="column is-2"><label class="label">Số lượng in</label><input type="number" class="input qty" oninput="syncLamQty(this); calculateAll(${calcIndex});"></div>
+            <div class="column is-2"><label class="label">Khổ in (WxH)</label><input type="text" class="input pSize" placeholder="27x39" oninput="autoProcess(this, ${calcIndex}, ${totalItemCount});"></div>
+            <div class="column is-2"><label class="label">Giá Giấy (Tr/Tấn)</label><input type="number" step="0.1" class="input pPrice" placeholder="17.7" oninput="calculateAll(${calcIndex});"></div>
+            <div class="column is-1"><label class="label">GSM</label><input type="number" class="input gsm" oninput="autoProcess(this, ${calcIndex}, ${totalItemCount});"></div>
+            <div class="column is-2"><label class="label">Máy in</label><div class="select is-fullwidth"><select class="machine" onchange="calculateAll(${calcIndex});">
+    <option value="" disabled selected hidden></option> <option value="m4">Máy 4</option>
+    <option value="m8">Máy 8</option>
+    <option value="m10">Máy 10</option>
+    <option value="m16">Máy 16</option>
+</select>
+            </select></div></div>
+<div class="column is-1"><label class="label">Mặt</label><input type="number" class="input sides" oninput="calculateAll(${calcIndex});"></div>
+<div class="column is-1"><label class="label">Màu</label><input type="number" class="input colors" oninput="calculateAll(${calcIndex});"></div>
+            
+            <div class="column is-12"><div id="debug-${totalItemCount}" class="debug-box" style="background: rgba(0,0,0,0.3); padding: 10px; border-radius: 8px; font-size: 0.85rem; color: #a5f3fc; border: 1px solid rgba(165,243,252,0.1); margin-top: 5px;"><i>Nhập thông tin...</i></div></div>
+            
+            <div class="column is-12">
+                <div class="lamination-box">
+                    <div class="columns is-vcentered is-multiline is-variable is-2">
+                        <div class="column is-3"><label class="label">Gia công cán</label><div class="select is-small is-fullwidth"><select class="lamType" onchange="this.closest('.item-card').querySelector('.lamPrice').value = this.value; calculateAll(${calcIndex});">
+    <option value="0" selected style="display:none;"></option> <option value="">Màng mờ</option>
+    <option value="">Màng bóng</option>
+</select></div></div>
+                        <div class="column is-2"><label class="label">Khổ cán</label><input type="text" class="input is-small lamSize" placeholder="27x39" oninput="calculateAll(${calcIndex});"></div>
+                        <div class="column is-2"><label class="label">Đơn giá</label><input type="number" step="0.01" class="input is-small lamPrice" oninput="calculateAll(${calcIndex});"></div>
+                        <div class="column is-3"><label class="label">SL Cán</label><input type="number" class="input is-small lamQty" oninput="calculateAll(${calcIndex});"></div>
+                        <div class="column is-2"><label class="label">Mặt</label><div class="select is-small is-fullwidth"><select class="lamSides" onchange="calculateAll(${calcIndex});"><option value="1">1 mặt</option><option value="2">2 mặt</option></select></div></div>
+                    </div>
+                </div>
+            </div>
+        </div>`;
+            targetContainer.appendChild(div);
+        }
+
+        function autoProcess(inputEl, calcIndex, itemId) {
+            const card = inputEl.closest('.item-card');
+            const sizeStr = card.querySelector('.pSize').value.trim().toLowerCase();
+            const gsm = parseInt(card.querySelector('.gsm').value) || 0;
+            if ((!sizeStr.includes('x') && !sizeStr.includes('*')) || gsm === 0) return;
+
+            const parts = sizeStr.split(/[x*]/);
+            const [w, h] = parts.map(n => parseFloat(n));
+
+            let bestRam = null;
+            let minCostArea = Infinity;
+
+            RAM_SIZES.forEach(ram => {
+                function getBestNUp(pw, ph, cw, ch) {
+                    let nx1 = Math.floor(pw / cw), ny1 = Math.floor(ph / ch);
+                    let total1 = nx1 * ny1;
+                    if ((ph - ny1 * ch) >= cw && pw >= ch) total1 += Math.floor((ph - ny1 * ch) / cw) * Math.floor(pw / ch);
+                    else if ((pw - nx1 * cw) >= ch && ph >= cw) total1 += Math.floor((pw - nx1 * cw) / ch) * Math.floor(ph / cw);
+
+                    let nx2 = Math.floor(pw / ch), ny2 = Math.floor(ph / cw);
+                    let total2 = nx2 * ny2;
+                    if ((ph - ny2 * cw) >= ch && pw >= cw) total2 += Math.floor((ph - ny2 * cw) / ch) * Math.floor(pw / cw);
+                    else if ((pw - nx2 * ch) >= cw && ph >= ch) total2 += Math.floor((pw - nx2 * ch) / cw) * Math.floor(ph / ch);
+
+                    return Math.max(total1, total2);
+                }
+
+                const s = getBestNUp(ram.w, ram.h, w, h);
+                if (s >= 1) {
+                    let areaPerSheet = ram.area / s;
+                    if (areaPerSheet < minCostArea) {
+                        minCostArea = areaPerSheet;
+                        bestRam = { ...ram, s };
+                    }
+                }
+            });
+
+            const badge = document.getElementById(`badge-${itemId}`);
+            if (bestRam) {
+                badge.innerText = `RAM ${bestRam.n} (${bestRam.s} BÀI)`;
+                card.dataset.sheets = bestRam.s;
+                card.dataset.pW = bestRam.w;
+                card.dataset.pH = bestRam.h;
+            }
+            calculateAll(calcIndex);
+        }
+
+        function calculateAll(calcIndex) {
+            const wrapper = document.getElementById(`calc-group-${calcIndex}`);
+            if (!wrapper) return;
+
+            let baseTotal = 0;
+            wrapper.querySelectorAll('.item-card').forEach(item => {
+                const id = item.id.split('-')[1];
+                const qty = parseFloat(item.querySelector('.qty').value) || 0;
+                const gsm = parseInt(item.querySelector('.gsm').value) || 0;
+                const pPriceRaw = parseFloat(item.querySelector('.pPrice').value) || 0;
+                const pW = parseFloat(item.dataset.pW) || 0;
+                const pH = parseFloat(item.dataset.pH) || 0;
+                const sheetsPerParent = parseFloat(item.dataset.sheets) || 1;
+                const machine = item.querySelector('.machine').value;
+                const colors = parseInt(item.querySelector('.colors').value) || 0;
+                const sides = parseInt(item.querySelector('.sides').value) || 1;
+                const debugBox = document.getElementById(`debug-${id}`);
+
+                if (qty > 0 && pW > 0 && pPriceRaw > 0 && gsm > 0) {
+                    const totalParentSheets = Math.ceil(qty / sheetsPerParent);
+                    const weightKg = (totalParentSheets * pW * pH * gsm) / 10000000;
+                    const paperCost = weightKg * pPriceRaw * 1000;
+
+                    const m = MACHINE_PRICES[machine];
+                    const plateCost = colors * m.kem;
+                    let unitRunCost = (machine === "m10" && (pW >= 52 || pH >= 72 || pW >= 72 || pH >= 52)) ? m.congMax : m.cong;
+                    if (machine === "m16") unitRunCost = (pW >= 72 || pH >= 102 || pW >= 102 || pH >= 72) ? m.congMax : m.cong;
+                    const initialRunCost = colors * unitRunCost;
+                    const totalRuns = qty * sides;
+                    let overRunCost = (totalRuns > 1000) ? (totalRuns - 1000) * (machine === "m10" && unitRunCost === m.congMax ? m.buMax : m.bu) * colors : 0;
+                    const totalMachineCost = plateCost + initialRunCost + overRunCost;
+
+                    let lamination = 0;
+                    const lamPrice = parseFloat(item.querySelector('.lamPrice').value) || 0;
+                    const lamQty = parseFloat(item.querySelector('.lamQty').value) || 0;
+                    const lamSides = parseInt(item.closest('.item-card').querySelector('.lamSides')?.value) || 1;
+                    if (lamPrice > 0) {
+                        let sInput = item.querySelector('.lamSize').value.trim() || item.querySelector('.pSize').value.trim();
+                        const p = sInput.toLowerCase().replace(/,/g, '.').split(/[x*]/);
+                        if (p.length === 2) lamination = parseFloat(p[0]) * parseFloat(p[1]) * lamQty * lamPrice * lamSides;
+                    }
+
+                    if (debugBox) {
+                        debugBox.innerHTML = `
+                    <div style="display: flex; flex-wrap: wrap; gap: 12px; line-height: 1.6;">
+                        <span><b>Giấy:</b> ${totalParentSheets} tờ ${pW}x${pH} (${weightKg.toFixed(2)}kg) = <b style="color: #10b981;">${Math.round(paperCost).toLocaleString()}đ</b></span>
+                        <span>| <b>Kẽm:</b> <b>${plateCost.toLocaleString()}đ</b></span>
+                        <span>| <b>In:</b> <b>${Math.round(initialRunCost + overRunCost).toLocaleString()}đ</b></span>
+                        ${lamination > 0 ? `<span>| <b>Cán:</b> <b style="color: #fbbf24;">${Math.round(lamination).toLocaleString()}đ</b></span>` : ""}
+                    </div>
+                `;
+                    }
+                    baseTotal += paperCost + lamination + totalMachineCost;
+                }
+            });
+
+            wrapper.querySelectorAll('.manual-val').forEach(input => { baseTotal += getRawValue(input.value); });
+            const pP = (parseFloat(wrapper.querySelector('.profit-percent').value) || 0) / 100;
+            const vP = (parseFloat(wrapper.querySelector('.vat-percent').value) || 0) / 100;
+            const profitVal = baseTotal * (1 + pP);
+            const finalVal = profitVal * (1 + vP);
+
+            wrapper.querySelector('.col-vat-amount').style.display = vP > 0 ? "block" : "none";
+            wrapper.querySelector('.view-base').innerText = Math.round(baseTotal).toLocaleString('vi-VN');
+            wrapper.querySelector('.view-profit').innerText = Math.round(profitVal).toLocaleString('vi-VN');
+            wrapper.querySelector('.view-vat-diff').innerText = Math.round(profitVal * vP).toLocaleString('vi-VN');
+            wrapper.querySelector('.view-final').innerText = Math.round(finalVal).toLocaleString('vi-VN') + " VNĐ";
+        }
+
+        function syncLamQty(el) { el.closest('.item-card').querySelector('.lamQty').value = el.value; }
+        function getRawValue(str) { return parseFloat(str.toString().replace(/\./g, "")) || 0; }
+        function formatCurrencyInput(el) { let v = el.value.replace(/\D/g, ""); el.value = v ? parseInt(v).toLocaleString('vi-VN') : ""; };
+        document.addEventListener('input', e => { if (e.target.classList.contains('currency-input')) formatCurrencyInput(e.target); });
+
+        // Tạo bảng tính đầu tiên khi load trang
+        createNewCalculator();
+    </script>
+</body>
+
+</html>
