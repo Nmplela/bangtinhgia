@@ -8,6 +8,14 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
+/* Thêm vào CSS để điện thoại xem được mượt */
+@media (max-width: 768px) {
+    .container { padding: 5px; }
+    .columns.is-multiline { display: block; } /* Chuyển thành hàng dọc cho dễ nhìn trên đt */
+    .column { width: 100% !important; margin-bottom: 10px; }
+    .sticky-footer .is-flex { flex-direction: column; } /* Cụm giá tiền xếp dọc */
+}
+        
         :root {
             --bg-body: #05070a;
             --card-bg: #0f172a;
