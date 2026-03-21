@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
-        /* BỘ KHUNG CSS ĐÃ ĐƯỢC LÀM MỚI CHO MOBILE/TABLET */
+        /* BỘ KHUNG CSS CHO MOBILE/TABLET */
         @media (max-width: 768px) {
             body {
                 padding: 10px;
@@ -348,7 +348,7 @@
         let totalItemCount = 0;
 
         // =====================================================
-        // DATABASE NÃO BỘ MỚI TỪ XƯỞNG IN
+        // DATABASE KHỔ GIẤY CHUẨN XÁC THEO XƯỞNG
         // =====================================================
         const MACHINES = {
             "m4": { label: "M4", maxW: 45.5, maxH: 53, zinc: 35000, base: 80000, extra: 25 },
@@ -357,36 +357,29 @@
             "m16": { label: "M16", maxW: 72, maxH: 120, zinc: 120000, base: 230000, extra: 80 }
         };
 
-        const RAM_EXACT_YIELDS = [
-            { ram: "79x109", pW: 26, pH: 36, nup: 9 }, { ram: "79x109", pW: 27, pH: 39, nup: 8 },
-            { ram: "79x109", pW: 26, pH: 54, nup: 6 }, { ram: "79x109", pW: 36, pH: 39, nup: 6 },
-            { ram: "79x109", pW: 27, pH: 52, nup: 6 }, { ram: "79x109", pW: 34, pH: 45, nup: 5 },
-            { ram: "79x109", pW: 31, pH: 48, nup: 5 }, { ram: "79x109", pW: 33, pH: 46, nup: 5 },
-            { ram: "79x109", pW: 32, pH: 47, nup: 5 }, { ram: "79x109", pW: 36, pH: 43, nup: 5 },
-            { ram: "79x109", pW: 39, pH: 54, nup: 4 }, { ram: "79x109", pW: 39.5, pH: 54, nup: 4 },
-            { ram: "79x109", pW: 54, pH: 79, nup: 2 }, { ram: "79x109", pW: 52, pH: 72, nup: 2 },
-
-            { ram: "65x86", pW: 32, pH: 43, nup: 4 }, { ram: "65x86", pW: 43, pH: 65, nup: 2 },
-            { ram: "65x86", pW: 28.5, pH: 65, nup: 3 }, { ram: "65x86", pW: 32.5, pH: 54, nup: 3 },
-
-            { ram: "62x86", pW: 31, pH: 43, nup: 4 }, { ram: "62x86", pW: 43, pH: 62, nup: 2 },
-            { ram: "62x86", pW: 28.5, pH: 62, nup: 3 }, { ram: "62x86", pW: 31, pH: 54, nup: 3 }
-        ];
-
-        const STD_RAMS = [
-            { w: 65, h: 86, label: "65x86" }, { w: 79, h: 109, label: "79x109" },
-            { w: 62, h: 86, label: "62x86" }, { w: 65, h: 87.5, label: "65x87.5" },
-            { w: 79, h: 110, label: "79x110" }, { w: 55, h: 79, label: "55x79" }
-        ];
+        const PAPER_DB = {
+            "IVORY 210": { rams: [[65, 86], [79, 109]], rollCat: "IVORY" },
+            "IVORY 230-400": { rams: [[62, 86], [65, 86], [79, 109]], rollCat: "IVORY" },
+            "C80": { rams: [[62, 86], [65, 86], [79, 109]], rollCat: "COUCHE" },
+            "C80 MATT": { rams: [[62, 86]], rollCat: null },
+            "COUCHE 100-300": { rams: [[60, 86], [62, 86], [65, 86], [79, 109], [52, 72], [72, 102]], rollCat: "COUCHE" },
+            "Couche MATT 100-200": { rams: [[62, 86]], rollCat: null },
+            "C300-350 PINDO": { rams: [[65, 86], [79, 109]], rollCat: null },
+            "OFFSET 60": { rams: [[60, 84], [65, 86]], rolls: [65], rollCat: null },
+            "OFFSET 70": { rams: [[60, 84], [62, 86], [65, 86], [79, 109]], rollCat: "OFFSET" },
+            "OFFSET 80-150": { rams: [[60, 84], [62, 86], [65, 86], [72, 102], [79, 109]], rollCat: "OFFSET" },
+            "OFFSET 180": { rams: [[65, 86], [79, 109]], rollCat: "OFFSET" },
+            "OFFSET 200-250": { rams: [[62, 86], [65, 86], [79, 109]], rollCat: "OFFSET" },
+            "DUPLEX 250-400": { rams: [[65, 86], [79, 109]], rolls: [65, 79, 86, 109], rollCat: null },
+            "KRAFT TRẮNG 120": { rams: [[65, 86], [79, 109]], rolls: [65, 79, 86, 109], rollCat: null },
+            "CACBON": { rams: [[62, 86], [79, 109]], rollCat: null }
+        };
 
         const ROLL_DB = {
             "IVORY": {
-                210: [65, 72, 79, 86, 109, 120],
-                230: [62, 65, 70, 72, 79, 86, 93, 102, 109],
-                250: [62, 65, 72, 79, 86, 96, 104, 109],
-                300: [60, 62, 65, 70, 72, 75, 79, 86, 90, 92, 96, 104, 109, 116, 118],
-                350: [62, 65, 72, 75, 79, 86, 90, 92, 96, 102, 109, 120],
-                400: [60, 62, 65, 68, 72, 75, 79, 86, 90, 92, 96, 109, 102]
+                210: [65, 72, 79, 86, 109, 120], 230: [62, 65, 70, 72, 79, 86, 93, 102, 109],
+                250: [62, 65, 72, 79, 86, 96, 104, 109], 300: [60, 62, 65, 70, 72, 75, 79, 86, 90, 92, 96, 104, 109, 116, 118],
+                350: [62, 65, 72, 75, 79, 86, 90, 92, 96, 102, 109, 120], 400: [60, 62, 65, 68, 72, 75, 79, 86, 90, 92, 96, 109, 102]
             },
             "COUCHE": {
                 100: [62, 65, 72, 79, 86, 109], 120: [62, 65, 72, 79, 86, 102, 109],
@@ -403,18 +396,22 @@
             }
         };
 
-        // =====================================================
-        // HÀM TIỆN ÍCH
-        // =====================================================
+        const RAM_EXACT_YIELDS = [
+            { ram: "79x109", pW: 26, pH: 36, nup: 9 }, { ram: "79x109", pW: 27, pH: 39, nup: 8 },
+            { ram: "79x109", pW: 26, pH: 54, nup: 6 }, { ram: "79x109", pW: 36, pH: 39, nup: 6 },
+            { ram: "79x109", pW: 27, pH: 52, nup: 6 }, { ram: "79x109", pW: 34, pH: 45, nup: 5 },
+            { ram: "79x109", pW: 31, pH: 48, nup: 5 }, { ram: "79x109", pW: 33, pH: 46, nup: 5 },
+            { ram: "79x109", pW: 32, pH: 47, nup: 5 }, { ram: "79x109", pW: 36, pH: 43, nup: 5 },
+            { ram: "79x109", pW: 39, pH: 54, nup: 4 }, { ram: "79x109", pW: 39.5, pH: 54, nup: 4 },
+            { ram: "79x109", pW: 54, pH: 79, nup: 2 }, { ram: "79x109", pW: 52, pH: 72, nup: 2 },
+            { ram: "65x86", pW: 32, pH: 43, nup: 4 }, { ram: "65x86", pW: 43, pH: 65, nup: 2 },
+            { ram: "65x86", pW: 28.5, pH: 65, nup: 3 }, { ram: "65x86", pW: 32.5, pH: 54, nup: 3 },
+            { ram: "62x86", pW: 31, pH: 43, nup: 4 }, { ram: "62x86", pW: 43, pH: 62, nup: 2 },
+            { ram: "62x86", pW: 28.5, pH: 62, nup: 3 }, { ram: "62x86", pW: 31, pH: 54, nup: 3 }
+        ];
+
         function fmt(n) { return Math.round(n || 0).toLocaleString('vi-VN'); }
-
-        function parseNum(v) {
-            if (!v) return 0;
-            if (typeof v === 'number') return v;
-            return parseFloat(String(v).replace(/\./g, '').replace(/,/g, '.').trim()) || 0;
-        }
-
-        // BẢN VÁ LỖI CỰC MẠNH CHO KHỔ GIẤY (Đọc được cả 27*39 lẫn 27 x 39)
+        function parseNum(v) { return parseFloat(String(v).replace(/\./g, '').replace(/,/g, '.').trim()) || 0; }
         function parseSize(sizeStr) {
             if (!sizeStr) return null;
             let str = String(sizeStr).trim().toLowerCase().replace(/[^0-9x*.]/g, '');
@@ -422,7 +419,6 @@
             if (parts.length !== 2 || isNaN(parts[0]) || isNaN(parts[1]) || parts[0] <= 0 || parts[1] <= 0) return null;
             return { w: Math.min(parts[0], parts[1]), h: Math.max(parts[0], parts[1]) };
         }
-
         function getBestNUp(pw, ph, cw, ch) {
             const W = Math.max(pw, ph), H = Math.min(pw, ph);
             const a = Math.max(cw, ch), b = Math.min(cw, ch);
@@ -440,13 +436,13 @@
             return Math.max(t1, t2, complexPack(W, H, a, b), complexPack(W, H, b, a));
         }
 
-        // =====================================================
-        // LUỒNG XỬ LÝ CHÍNH
-        // =====================================================
         function autoProcess(inputEl, calcIndex, itemId) {
             calculateAll(calcIndex);
         }
 
+        // =====================================================
+        // THUẬT TOÁN TÍNH TOÁN CỐT LÕI
+        // =====================================================
         function calculateAll(calcIndex) {
             const wrapper = document.getElementById(`calc-group-${calcIndex}`);
             if (!wrapper) return;
@@ -469,9 +465,8 @@
                 const warnBox = document.getElementById(`offset-warn-${id}`);
                 warnBox.classList.remove('show');
 
-                // 1. NẾU CHƯA CÓ KHỔ TP -> DỪNG
-                if (!sizeInfo) {
-                    document.getElementById(`debug-${id}`).innerHTML = `<i>Nhập Khổ TP để hệ thống gợi ý khổ giấy ghép...</i>`;
+                if (!sizeInfo || !typeName || !PAPER_DB[typeName]) {
+                    document.getElementById(`debug-${id}`).innerHTML = `<i>Nhập Khổ TP và Chọn loại giấy để hệ thống tính toán...</i>`;
                     badge.innerText = "CHƯA TÍNH"; badge.style.background = "rgba(255, 255, 255, 0.7)";
                     item.querySelector('.chosenPaper').value = ''; item.querySelector('.chosenNup').value = '';
                     item.querySelector('.calcSheets').value = ''; item.querySelector('.calcPressSheets').value = '';
@@ -479,8 +474,8 @@
                 }
 
                 let { w, h } = sizeInfo;
+                const dbRecord = PAPER_DB[typeName];
 
-                // 2. MÔ PHỎNG DỮ LIỆU ĐỂ TÌM GIẤY NHANH
                 let simQty = qty > 0 ? qty : 1000;
                 let simGsm = gsm > 0 ? gsm : 300;
                 let simPrice = pPriceRaw > 0 ? pPriceRaw * 1000 : 15000;
@@ -488,67 +483,64 @@
                 let bestOpt = null;
                 let lowestCost = Infinity;
 
-                for (const ey of RAM_EXACT_YIELDS) {
-                    if ((w <= ey.pW && h <= ey.pH) || (w <= ey.pH && h <= ey.pW)) {
-                        let sheets = Math.ceil(simQty / ey.nup);
-                        let parsedRam = parseSize(ey.ram);
-                        if (parsedRam) {
-                            let rw = parsedRam.w, rh = parsedRam.h;
-                            let cost = (rw * rh * simGsm / 10000000) * sheets * simPrice;
-                            if (cost < lowestCost) {
-                                lowestCost = cost;
-                                bestOpt = { source: 'RAM', label: ey.ram, nup: ey.nup, pW: rw, pH: rh, cost: cost, isRoll: false };
+                // BIẾN MỚI LƯU PHƯƠNG ÁN RAM DỰ PHÒNG TỐT NHẤT
+                let bestRamOpt = null;
+
+                // 1. TÌM TRONG KHỔ RAM CHO PHÉP VÀ LƯU PHƯƠNG ÁN RAM
+                for (let r of dbRecord.rams) {
+                    let rw = r[0], rh = r[1];
+                    let nup = getBestNUp(rw, rh, w, h);
+
+                    for (const ey of RAM_EXACT_YIELDS) {
+                        if (ey.ram === `${rw}x${rh}` || ey.ram === `${rh}x${rw}`) {
+                            if ((w <= ey.pW && h <= ey.pH) || (w <= ey.pH && h <= ey.pW)) {
+                                nup = Math.max(nup, ey.nup);
                             }
                         }
                     }
-                }
 
-                for (const r of STD_RAMS) {
-                    let nup = getBestNUp(r.w, r.h, w, h);
                     if (nup > 0) {
                         let sheets = Math.ceil(simQty / nup);
-                        let cost = (r.w * r.h * simGsm / 10000000) * sheets * simPrice;
+                        let cost = (rw * rh * simGsm / 10000000) * sheets * simPrice;
                         if (cost < lowestCost) {
                             lowestCost = cost;
-                            bestOpt = { source: 'RAM_CALC', label: r.label, nup: nup, pW: r.w, pH: r.h, cost: cost, isRoll: false };
+                            bestOpt = { source: 'RAM', label: `${rw}x${rh}`, nup: nup, pW: rw, pH: rh, cost: cost, isRoll: false };
+                            bestRamOpt = bestOpt; // Cache lại lựa chọn RAM rẻ nhất
                         }
                     }
                 }
 
-                let rollCat = "";
-                const typeUp = (typeName || "").toUpperCase();
-                if (typeUp.includes("IVORY")) rollCat = "IVORY";
-                else if (typeUp.includes("C80") || typeUp.includes("COUCHE") || typeUp.includes("C300")) rollCat = "COUCHE";
-                else if (typeUp.includes("OFFSET")) rollCat = "OFFSET";
+                // 2. TẬP HỢP TẤT CẢ CÁC KHỔ LÔ (ROLLS) HỢP LỆ
+                let validRolls = [];
+                if (dbRecord.rolls) {
+                    validRolls = validRolls.concat(dbRecord.rolls);
+                }
+                if (dbRecord.rollCat && ROLL_DB[dbRecord.rollCat] && ROLL_DB[dbRecord.rollCat][simGsm]) {
+                    validRolls = validRolls.concat(ROLL_DB[dbRecord.rollCat][simGsm]);
+                }
+                validRolls = [...new Set(validRolls)];
 
-                if (rollCat && ROLL_DB[rollCat] && ROLL_DB[rollCat][simGsm]) {
-                    for (let rollW of ROLL_DB[rollCat][simGsm]) {
-                        let maxNupW = Math.floor(rollW / w);
-                        for (let i = 1; i <= maxNupW; i++) {
-                            let sheets = Math.ceil(simQty / i);
-                            let cost = (rollW * h * simGsm / 10000000) * sheets * simPrice + 200000;
-                            let isBetter = false;
-                            if (cost < lowestCost - 100) isBetter = true;
-                            else if (Math.abs(cost - lowestCost) <= 100 && bestOpt && bestOpt.isRoll && rollW > bestOpt.rollWidth) isBetter = true;
+                // 3. TÍNH TOÁN XẢ LÔ NẾU CÓ TRONG DANH SÁCH
+                for (let rollW of validRolls) {
+                    let maxNupW = Math.floor(rollW / w);
+                    for (let i = 1; i <= maxNupW; i++) {
+                        let sheets = Math.ceil(simQty / i);
+                        let cost = (rollW * h * simGsm / 10000000) * sheets * simPrice + 200000;
 
-                            if (isBetter || lowestCost === Infinity) {
-                                lowestCost = cost;
-                                bestOpt = { source: 'XẢ LÔ', label: `Lô ${rollW}`, nup: i, pW: Math.min(rollW, h), pH: Math.max(rollW, h), cost: cost, isRoll: true, cut: h, rollWidth: rollW };
-                            }
+                        // Nếu rẻ hơn RAM thì Roll sẽ đè lên thành bestOpt
+                        if (cost < lowestCost - 100) {
+                            lowestCost = cost;
+                            bestOpt = { source: 'XẢ LÔ', label: `Lô ${rollW}`, nup: i, pW: Math.min(rollW, h), pH: Math.max(rollW, h), cost: cost, isRoll: true, cut: h, rollWidth: rollW };
                         }
+                    }
 
-                        let maxNupH = Math.floor(rollW / h);
-                        for (let i = 1; i <= maxNupH; i++) {
-                            let sheets = Math.ceil(simQty / i);
-                            let cost = (rollW * w * simGsm / 10000000) * sheets * simPrice + 200000;
-                            let isBetter = false;
-                            if (cost < lowestCost - 100) isBetter = true;
-                            else if (Math.abs(cost - lowestCost) <= 100 && bestOpt && bestOpt.isRoll && rollW > bestOpt.rollWidth) isBetter = true;
-
-                            if (isBetter || lowestCost === Infinity) {
-                                lowestCost = cost;
-                                bestOpt = { source: 'XẢ LÔ', label: `Lô ${rollW}`, nup: i, pW: Math.min(rollW, w), pH: Math.max(rollW, w), cost: cost, isRoll: true, cut: w, rollWidth: rollW };
-                            }
+                    let maxNupH = Math.floor(rollW / h);
+                    for (let i = 1; i <= maxNupH; i++) {
+                        let sheets = Math.ceil(simQty / i);
+                        let cost = (rollW * w * simGsm / 10000000) * sheets * simPrice + 200000;
+                        if (cost < lowestCost - 100) {
+                            lowestCost = cost;
+                            bestOpt = { source: 'XẢ LÔ', label: `Lô ${rollW}`, nup: i, pW: Math.min(rollW, w), pH: Math.max(rollW, w), cost: cost, isRoll: true, cut: w, rollWidth: rollW };
                         }
                     }
                 }
@@ -556,10 +548,11 @@
                 if (!bestOpt) {
                     badge.innerText = "KHÔNG GHÉP ĐƯỢC"; badge.style.background = "#fca5a5";
                     item.querySelector('.chosenPaper').value = ""; item.querySelector('.chosenNup').value = "";
+                    document.getElementById(`debug-${id}`).innerHTML = `<b style="color:#fca5a5">Báo lỗi:</b> Khổ thành phẩm quá lớn, hoặc giấy không hỗ trợ khổ ghép này.`;
                     return;
                 }
 
-                // 3. HIỆN KẾT QUẢ GIẤY NGAY LẬP TỨC TRÊN GIAO DIỆN
+                // HIỆN KẾT QUẢ GIẤY NGAY LẬP TỨC TRÊN GIAO DIỆN
                 item.querySelector('.chosenPaper').value = bestOpt.label;
                 item.querySelector('.chosenNup').value = bestOpt.nup;
 
@@ -569,7 +562,7 @@
                     badge.innerText = `RAM ${bestOpt.label} (${bestOpt.nup} BÀI)`; badge.style.background = "linear-gradient(90deg, #4facfe 0%, #00f2fe 100%)";
                 }
 
-                // 4. KIỂM TRA ĐIỀU KIỆN ĐỂ TÍNH TIỀN (Khóa mọi lỗi sập tại đây)
+                // 4. KIỂM TRA ĐIỀU KIỆN ĐỂ TÍNH TIỀN
                 if (qty <= 0 || gsm <= 0 || pPriceRaw <= 0 || colors <= 0 || zincs <= 0) {
                     document.getElementById(`debug-${id}`).innerHTML = `<i>Đã chốt khổ ghép <b>${bestOpt.label}</b>. Vui lòng nhập đủ: SL in + GSM + Giá + Kẽm + Màu để ra tiền.</i>`;
                     item.querySelector('.calcSheets').value = '';
@@ -582,12 +575,10 @@
                 let baseSheets = Math.ceil(qty / bestOpt.nup);
                 let runSheets = qty;
 
-                // Cập nhật lại Cost thật theo Qty và Price thật
-                if (bestOpt.isRoll) {
-                    bestOpt.cost = (bestOpt.rollWidth * bestOpt.cut * gsm / 10000000) * baseSheets * pricePerKg + 200000;
-                } else {
-                    bestOpt.cost = (bestOpt.pW * bestOpt.pH * gsm / 10000000) * baseSheets * pricePerKg;
-                }
+                // Tính tiền giấy thực tế
+                let realCost = bestOpt.isRoll ?
+                    ((bestOpt.rollWidth * bestOpt.cut * gsm / 10000000) * baseSheets * pricePerKg + 200000) :
+                    ((bestOpt.pW * bestOpt.pH * gsm / 10000000) * baseSheets * pricePerKg);
 
                 item.querySelector('.calcSheets').value = fmt(baseSheets);
                 item.querySelector('.calcPressSheets').value = fmt(qty);
@@ -610,34 +601,50 @@
                 let lamCost = 0;
                 let lamIndex = item.querySelector('.lamType').selectedIndex;
                 if (lamIndex > 0) {
-                    // Ưu tiên lấy giá thợ nhập, nếu không nhập thì lấy giá mặc định 0.3 hoặc 0.28
                     let manualLamRate = parseFloat(item.querySelector('.lamPrice').value);
                     let lamRate = isNaN(manualLamRate) ? ((lamIndex === 1) ? 0.3 : 0.28) : manualLamRate;
-
                     let lamQty = parseFloat(item.querySelector('.lamQty').value) || qty;
                     let lamSides = parseInt(item.querySelector('.lamSides').value) || 1;
-
                     let lamSizeRaw = item.querySelector('.lamSize').value || item.querySelector('.pSize').value;
                     let lamSize = parseSize(lamSizeRaw) || { w: w, h: h };
-
                     lamCost = lamSize.w * lamSize.h * lamRate * lamQty * lamSides;
                 }
 
-                let itemTotal = bestOpt.cost + zincCost + machineCost + lamCost;
+                let itemTotal = realCost + zincCost + machineCost + lamCost;
                 baseTotal += itemTotal;
 
                 let weightKg = (bestOpt.pW * bestOpt.pH * gsm * baseSheets) / 10000000;
                 let weightStr = weightKg.toLocaleString('vi-VN', { maximumFractionDigits: 1 });
 
-                document.getElementById(`debug-${id}`).innerHTML = `
-                    <b>Giấy:</b> Phân tích chọn <b>${bestOpt.label}</b> | <b>${bestOpt.nup} bài/tờ</b><br>
-                    => Cần <b>${fmt(baseSheets)} tờ</b> ${bestOpt.isRoll ? `(Phí xả lô 200k cắt ${bestOpt.cut}cm)` : ''} <span style="color:#fde047">| <b>${weightStr} kg</b></span> = <b>${fmt(bestOpt.cost)}đ</b><br>
+                // DỰNG ĐOẠN HTML THÔNG BÁO GỐC
+                let debugText = `
+                    <b>Giấy:</b> Chọn <b>${bestOpt.label}</b> | <b>${bestOpt.nup} bài/tờ</b><br>
+                    => Cần <b>${fmt(baseSheets)} tờ</b> ${bestOpt.isRoll ? `(Cộng 200k xả lô)` : ''} <span style="color:#fde047">| <b>${weightStr} kg</b></span> = <b>${fmt(realCost)}đ</b><br>
                     <b>Kẽm (${mach.label}):</b> ${zincs} kẽm × ${fmt(mach.zinc)} = <b>${fmt(zincCost)}đ</b><br>
                     <b>Công máy (${mach.label}):</b> Phí cơ bản (${colors} màu) × ${fmt(mach.base)}đ/màu = <b>${fmt(baseRunCost)}đ</b><br>
                     <b>Bù chạy máy:</b> max(0, ${fmt(runSheets)} − 1.000) = ${fmt(extraRuns)} lượt × ${mach.extra}đ × ${colors} màu = <b>${fmt(overRunCost)}đ</b><br>
                     ${lamCost > 0 ? `<b>Cán màng:</b> D×R × Hệ số × SL × Mặt = <b>${fmt(lamCost)}đ</b><br>` : ''}
                     <span style="color:#86efac;font-size:1.1em;"><b>TỔNG BÀI IN:</b> ${fmt(itemTotal)}đ</span>
                 `;
+
+                // TÍNH TOÁN & HIỂN THỊ PHƯƠNG ÁN RAM DỰ PHÒNG NẾU ĐANG CHỌN XẢ LÔ
+                if (bestOpt.isRoll && bestRamOpt) {
+                    let ramSheets = Math.ceil(qty / bestRamOpt.nup);
+                    let ramCost = (bestRamOpt.pW * bestRamOpt.pH * gsm / 10000000) * ramSheets * pricePerKg;
+                    let ramWeightKg = (bestRamOpt.pW * bestRamOpt.pH * gsm * ramSheets) / 10000000;
+                    let diffCost = ramCost - realCost;
+
+                    debugText += `
+                        <div style="margin-top:12px; padding:10px; background:rgba(251, 191, 36, 0.1); border-radius:8px; border-left:3px solid #f59e0b;">
+                            <b style="color:#fcd34d; font-size:0.85rem;">💡 DỰ PHÒNG GIẤY RAM (NẾU HẾT CUỘN):</b><br>
+                            Chuyển sang <b>RAM ${bestRamOpt.label}</b> ghép <b>${bestRamOpt.nup} bài/tờ</b><br>
+                            => Cần <b>${fmt(ramSheets)} tờ</b> <span style="color:#fde047">| <b>${ramWeightKg.toLocaleString('vi-VN', { maximumFractionDigits: 1 })} kg</b></span> = <b>${fmt(ramCost)}đ</b><br>
+                            <span style="color:#cbd5e1; font-size:0.8rem;"><i>(Dùng RAM đắt hơn xả lô: <span style="color:#fca5a5;">+${fmt(diffCost)}đ</span>)</i></span>
+                        </div>
+                    `;
+                }
+
+                document.getElementById(`debug-${id}`).innerHTML = debugText;
             });
 
             // TÍNH TỔNG CỘNG GIA CÔNG
